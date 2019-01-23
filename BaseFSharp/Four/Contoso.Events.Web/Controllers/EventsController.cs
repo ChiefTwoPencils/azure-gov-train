@@ -14,13 +14,19 @@ namespace Contoso.Events.Management.Controllers
         [Route("{page:int?}", Name = "EventList")]
         public IActionResult Index([FromServices] EventsContext eventsContext, [FromServices] IOptions<ApplicationSettings> appSettings, int? page)
         {
-            var pagedEvents = Enumerable.Empty<Event>();
+            int currentPage = page ?? 1;
+            int totalRows = eventsContext.Events.Count();
+            int pageSize = appSettings.Value.GridPageSize;
+            var pagedEvents = eventsContext.Events
+                .OrderByDescending(e => e.StartTime)
+                .Skip(pageSize * (currentPage - 1))
+                .Take(pageSize);
 
             EventsGridViewModel viewModel = new EventsGridViewModel
             {
-                CurrentPage = 0,
-                PageSize = 0,
-                TotalRows = 0,
+                CurrentPage = currentPage,
+                PageSize = pageSize,
+                TotalRows = totalRows,
                 Events = pagedEvents
             };
 
@@ -31,7 +37,8 @@ namespace Contoso.Events.Management.Controllers
         [Route("detail/{key}", Name = "EventDetail")]
         public IActionResult Detail([FromServices] EventsContext eventsContext, string key)
         {
-            var matchedEvent = default(Event);
+            var matchedEvent = eventsContext.Events
+                .SingleOrDefault(e => e.EventKey == key);
 
             EventDetailViewModel viewModel = new EventDetailViewModel
             {

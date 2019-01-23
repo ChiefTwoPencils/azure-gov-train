@@ -14,7 +14,10 @@ namespace Contoso.Events.Management.Controllers
         [Route("", Name = "Home")]
         public IActionResult Index([FromServices] EventsContext eventsContext, [FromServices] IOptions<ApplicationSettings> appSettings)
         {
-            var upcomingEvents = Enumerable.Empty<Event>();
+            var upcomingEvents = eventsContext.Events
+                .Where(e => e.StartTime >= DateTime.Today)
+                .OrderBy(e => e.StartTime)
+                .Take(appSettings.Value.LatestEventCount);
 
             UpcomingEventsViewModel viewModel = new UpcomingEventsViewModel
             {
