@@ -16,7 +16,7 @@ namespace Contoso.Events.Worker
     public static class ProcessDocuments
     {
         private static ConnectionManager _connection = new ConnectionManager();
-
+        private static RegistrationContext _regCtx = _connection.GetCosmosContext();
 
         [FunctionName("ProcessDocuments")]
         public static async Task Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")]HttpRequest request, TraceWriter log)
@@ -37,11 +37,11 @@ namespace Contoso.Events.Worker
             using (EventsContext eventsContext = _connection.GetSqlContext())
             {
                 await eventsContext.Database.EnsureCreatedAsync();
-
+                await _regCtx.ConfigureConnectionAsync();
 
                 Event eventEntry = await eventsContext.Events.SingleOrDefaultAsync(e => e.EventKey == eventKey);
 
-                List<string> registrants = new List<string>();
+                List<string> registrants = await _regCtx.GetRegistrantsForEvent(eventKey);
 
                 return registrants;
             }
