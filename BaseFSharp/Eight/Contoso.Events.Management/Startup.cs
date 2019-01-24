@@ -31,7 +31,9 @@ namespace Contoso.Events.Management
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<RegistrationContext>();
 
-            services.AddTransient<BlobContext>();
+            // services.AddTransient<BlobContext>();
+            services.AddTransient<IQueueContext, ServiceBusContext>();
+
 
 
             services.AddDbContext<EventsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EventsContextConnectionString")));

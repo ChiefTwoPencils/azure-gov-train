@@ -15,7 +15,7 @@ namespace Contoso.Events.Worker
         private static RegistrationContext _registrationsContext = _connection.GetCosmosContext();
 
         [FunctionName("ProcessDocuments")]
-        public static async Task Run(string message, [Blob("signinsheets/output.docx", FileAccess.Write)] Stream blob, TraceWriter log)
+        public static async Task Run([ServiceBusTrigger("documentqueue", Connection = "ServiceBusConnectionString")]string message, [Blob("signinsheets/{label}.docx", FileAccess.Write)] Stream blob, TraceWriter log)
         {
             log.Info($"Request received to generate sign-in sheet for event: {message}");
 

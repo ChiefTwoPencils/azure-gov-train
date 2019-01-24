@@ -17,7 +17,11 @@ namespace Contoso.Events.Data
 
         public async Task SendQueueMessageAsync(string eventKey)
         {
-            await Task.FromResult<object>(null);
+            var queueClient = new QueueClient(ServiceBusSettings.ConnectionString, ServiceBusSettings.QueueName);
+            var messageContent = Encoding.UTF8.GetBytes(eventKey);
+            var message = new Message(messageContent);
+            message.Label = eventKey;
+            await queueClient.SendAsync(message);
         }
     }
 }
