@@ -1,10 +1,10 @@
 {
     "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=star20532robert;AccountKey=cHMiklwmpisAat8Nhl/SbIFxP3Eu7kpjNNa5se2R5p3XT4yf8QIgrFDaQX1UZ1n1e8nGjmCZUEZ+D1aGW/JegQ==;EndpointSuffix=core.windows.net,",
-    "AzureWebJobsDashboard": "DefaultEndpointsProtocol=https;AccountName=star20532robert;AccountKey=cHMiklwmpisAat8Nhl/SbIFxP3Eu7kpjNNa5se2R5p3XT4yf8QIgrFDaQX1UZ1n1e8nGjmCZUEZ+D1aGW/JegQ==;EndpointSuffix=core.windows.net,",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=star20532robert;AccountKey=cHMiklwmpisAat8Nhl/SbIFxP3Eu7kpjNNa5se2R5p3XT4yf8QIgrFDaQX1UZ1n1e8nGjmCZUEZ+D1aGW/JegQ==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsDashboard": "DefaultEndpointsProtocol=https;AccountName=star20532robert;AccountKey=cHMiklwmpisAat8Nhl/SbIFxP3Eu7kpjNNa5se2R5p3XT4yf8QIgrFDaQX1UZ1n1e8nGjmCZUEZ+D1aGW/JegQ==;EndpointSuffix=core.windows.net",
     "EventsContextConnectionString": "Server=tcp:sv20532robert.database.windows.net,1433;Initial Catalog=db20532;Persist Security Info=False;User ID=testuser;Password=TestPa$$w0rd;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-    "CosmosEndpointUrl": "https://nosql20532robert.documents.azure.com:443/,",
+    "CosmosEndpointUrl": "https://nosql20532robert.documents.azure.com:443/",
     "CosmosAuthorizationKey": "HStliQ6u7PVxZcqC8l2BrSrXcEucg3x1toDMXR15Mw1yNqmiyrH3rZ7F09C4UVjui2ZMJ8u0qEKsci8pbmR3ew==",
     "CosmosDatabaseId": "EventsDatabase.Mod07",
     "CosmosCollectionId": "RegistrationCollection"

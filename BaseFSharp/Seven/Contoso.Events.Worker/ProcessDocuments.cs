@@ -16,13 +16,16 @@ namespace Contoso.Events.Worker
         private static RegistrationContext _registrationsContext = _connection.GetCosmosContext();
 
         [FunctionName("ProcessDocuments")]
-        public static async Task Run(Stream input, string name, Stream output, TraceWriter log)
+        public static async Task Run([BlobTrigger("signinsheets-pending/{name}")] Stream input, string name, [Blob("signinsheets/{name}", FileAccess.Write)] Stream output, TraceWriter log)
         {
             log.Info($"Request received to generate sign-in sheet for event: {name}");
 
-            
-
-
+            var eventKey = Path.GetFileNameWithoutExtension(name);
+            using (var stream = await ProcessStorageMessage(eventKey))
+            {
+                var byteArray = stream.ToArray();
+                await output.WriteAsync(byteArray, 0, byteArray.Length);
+            }
             log.Info($"Request received to generate sign-in sheet for event: {name}");
         }
 

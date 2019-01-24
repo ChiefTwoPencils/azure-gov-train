@@ -19,17 +19,56 @@ namespace Contoso.Events.Data
 
         public async Task<ICloudBlob> UploadBlobAsync(string blobName, Stream stream)
         {
-            return await Task.FromResult(default(ICloudBlob));
+            var account = CloudStorageAccount.Parse(StorageSettings.ConnectionString);
+            var blobClient = account.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference($"{StorageSettings.ContainerName}-pending");
+            await container.CreateIfNotExistsAsync();
+            var blob = container.GetBlockBlobReference(blobName);
+            stream.Seek(0, SeekOrigin.Begin);
+            await blob.UploadFromStreamAsync(stream);
+            return blob;
         }
 
         public async Task<DownloadPayload> GetStreamAsync(string blobId)
         {
-            return await Task.FromResult(default(DownloadPayload));
+            var account = CloudStorageAccount.Parse(StorageSettings.ConnectionString);
+            var blobClient = account.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference(StorageSettings.ContainerName);
+            await container.CreateIfNotExistsAsync();
+
+            var blob = container.GetBlockBlobReference(blobId);
+            var blobStream = await blob.OpenReadAsync(null, null, null);
+
+            return new DownloadPayload { Stream = blobStream, ContentType = blob.Properties.ContentType };
         }
 
         public async Task<string> GetSecureUrlAsync(string blobId)
         {
-            return await Task.FromResult(default(string));
+            var account = CloudStorageAccount.Parse(StorageSettings.ConnectionString);
+            var blobClient = account.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference(StorageSettings.ContainerName);
+            await container.CreateIfNotExistsAsync();
+
+            var blobPolicy = new SharedAccessBlobPolicy
+            {
+                SharedAccessExpiryTime = DateTime.Now.AddHours(0.25d),
+                Permissions = SharedAccessBlobPermissions.Read
+            };
+
+            var blobPermissions = new BlobContainerPermissions
+            {
+                PublicAccess = BlobContainerPublicAccessType.Off
+            };
+            blobPermissions.SharedAccessPolicies.Add("ReadBlobPolicy", blobPolicy);
+
+            await container.SetPermissionsAsync(blobPermissions);
+
+            var sasToken = container.GetSharedAccessSignature(new SharedAccessBlobPolicy(), "ReadBlobPolicy");
+
+            var blob = container.GetBlockBlobReference(blobId);
+            var blobUrl = blob.Uri;
+
+            return blobUrl.AbsoluteUri + sasToken;
         }
     }
 }
