@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Contoso.Events.Management
+namespace Contoso.Events.Web
 {
     public class Startup
     {
@@ -22,20 +22,12 @@ namespace Contoso.Events.Management
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddMvc();
-
+            
             services.Configure<ApplicationSettings>(Configuration.GetSection(nameof(ApplicationSettings)));
             services.Configure<CosmosSettings>(Configuration.GetSection(nameof(CosmosSettings)));
-            services.Configure<StorageSettings>(Configuration.GetSection(nameof(StorageSettings)));
-            services.Configure<ServiceBusSettings>(Configuration.GetSection(nameof(ServiceBusSettings)));
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<RegistrationContext>();
-
-            // services.AddTransient<BlobContext>();
-            services.AddTransient<IQueueContext, QueueContext>();
-            services.AddTransient<IQueueContext, ServiceBusContext>();
-
-
 
             services.AddDbContext<EventsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EventsContextConnectionString")));
         }

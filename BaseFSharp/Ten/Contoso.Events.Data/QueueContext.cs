@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Contoso.Events.Data
 {
-    public class QueueContext : IQueueContext
+    public class QueueContext
     {
         protected StorageSettings StorageSettings;
 
@@ -17,11 +17,12 @@ namespace Contoso.Events.Data
 
         public async Task SendQueueMessageAsync(string eventKey)
         {
-            var account = CloudStorageAccount.Parse(StorageSettings.ConnectionString);
-            var queueClient = account.CreateCloudQueueClient();
-            var queue = queueClient.GetQueueReference(StorageSettings.QueueName);
+            CloudStorageAccount account = CloudStorageAccount.Parse(StorageSettings.ConnectionString);
+            CloudQueueClient queueClient = account.CreateCloudQueueClient();
+            CloudQueue queue = queueClient.GetQueueReference(StorageSettings.QueueName);
             await queue.CreateIfNotExistsAsync();
-            var message = new CloudQueueMessage(eventKey);
+
+            CloudQueueMessage message = new CloudQueueMessage(eventKey);
             await queue.AddMessageAsync(message);
         }
     }
